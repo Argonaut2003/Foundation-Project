@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Find volunteering near you - CapGEM (prototype)</title>
+  <meta name="description" content="Find local volunteering opportunities by postcode and time. Verified organisations. Join with friends. Earn badges." />
+
+  <style>
+    :root{
+      --govuk-text:#0b0c0c; --govuk-bg:#ffffff; --govuk-link:#1d70b8; --govuk-link-visited:#4c2c92;
+      --govuk-link-hover:#003078; --govuk-border:#b1b4b6; --govuk-muted:#505a5f; --govuk-focus:#fd0;
+      --brand-cap:#0065A3; --panel:#f3f2f1; --success:#00703c; --error:#d4351c; --radius:4px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--govuk-text);background:var(--govuk-bg);line-height:1.5}
+    .govuk-width-container{max-width:960px;padding:0 15px;margin:0 auto}
+    .govuk-main-wrapper{padding:20px 0 40px}
+    header, footer{border-bottom:1px solid #e5e5e5}
+    footer{border-top:1px solid #e5e5e5;border-bottom:0}
+    a{color:var(--govuk-link)} a:hover{color:var(--govuk-link-hover)} a:visited{color:var(--govuk-link-visited)}
+    :focus-visible{outline:3px solid var(--govuk-focus);outline-offset:0}
+    .govuk-skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .govuk-skip-link:focus{position:static;width:auto;height:auto;padding:8px 10px;background:var(--govuk-focus);color:#0b0c0c;display:inline-block;margin:8px 0}
+    .header{background:#fff}
+    .header__inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0}
+    .service-name{font-weight:700;font-size:20px}
+    .phase-banner{background:var(--panel);padding:8px 12px;border-left:5px solid var(--brand-cap);margin:8px 0 0 0;font-size:16px}
+    h1{font-size:32px;margin:10px 0 5px}
+    .lead{color:var(--govuk-muted);max-width:70ch;margin:0 0 10px}
+    .search-panel{background:var(--panel);border:1px solid #e5e5e5;padding:16px;border-radius:var(--radius);margin:16px 0 20px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-weight:700;margin-bottom:6px}
+    .form-hint{color:var(--govuk-muted);font-size:0.95rem;margin-top:2px}
+    .input, select{width:100%;padding:12px;border:2px solid var(--govuk-border);border-radius:var(--radius);font-size:1rem}
+    .inline-controls{display:grid;grid-template-columns:1fr auto;gap:10px}
+    .button{appearance:none;border:0;border-radius:var(--radius);background:var(--brand-cap);color:#fff;font-weight:700;padding:12px 16px;cursor:pointer}
+    .button--secondary{background:#fff;color:var(--brand-cap);border:2px solid var(--brand-cap)}
+    .button:hover{filter:brightness(0.95)}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .filters select{width:auto}
+    .benefits{display:grid;gap:12px;grid-template-columns:repeat(3,1fr);margin:20px 0}
+    @media (max-width:820px){.benefits{grid-template-columns:1fr}}
+    .benefit{border:1px solid #e5e5e5;border-radius:var(--radius);padding:16px;background:#fff}
+    .benefit h3{margin:0 0 6px;font-size:20px}
+    .tick{color:var(--success);font-weight:700}
+    h2{font-size:24px;margin:24px 0 10px}
+    .orgs{display:grid;gap:10px;grid-template-columns:repeat(4,1fr)}
+    @media (max-width:820px){.orgs{grid-template-columns:repeat(2,1fr)}}
+    .org{border:1px solid #e5e5e5;border-radius:var(--radius);padding:12px;background:#fff}
+    .org .name{font-weight:700}
+    .org .meta{color:var(--govuk-muted)}
+    .verified{display:inline-block;margin-top:6px;color:#fff;background:#1d70b8;padding:2px 8px;border-radius:12px;font-size:0.9rem}
+    .results{margin-top:8px;display:grid;gap:12px}
+    .card{border:1px solid #e5e5e5;border-radius:var(--radius);padding:14px;background:#fff;overflow:hidden}
+    .card h3{margin:0 0 6px}
+    .meta{color:var(--govuk-muted);display:flex;gap:12px;flex-wrap:wrap}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+    .tag{border:1px solid var(--govuk-border);border-radius:999px;padding:2px 10px;font-size:0.9rem;background:#fff}
+    details summary{cursor:pointer}
+    /* Full-width action bar inside card */
+    .action-bar{
+      display:grid;grid-template-columns:1fr 1fr;margin-top:10px;
+      margin-left:-14px;margin-right:-14px; /* extend to card edges */
+    }
+    .action-bar .button{
+      border-radius:0;padding:14px 0; /* taller buttons */
+    }
+    .action-bar .button:first-child{
+      border-right:2px solid #fff;border-bottom-left-radius:var(--radius);
+    }
+    .action-bar .button:last-child{
+      border-bottom-right-radius:var(--radius);
+    }
+    .error-summary{border:4px solid var(--error);padding:10px 12px;background:#fef7f7;margin-bottom:16px}
+    .error-summary h2{margin:0 0 6px;font-size:20px;color:var(--error)}
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+    .mailing{background:var(--panel);border:1px solid #e5e5e5;border-radius:var(--radius);padding:16px;margin-top:28px}
+    .consent{font-size:.95rem;color:var(--govuk-muted);margin-top:6px}
+    footer .footer-links{display:flex;gap:16px;flex-wrap:wrap}
+    footer .govuk-footer{padding:18px 0;color:var(--govuk-muted)}
+  </style>
+</head>
+<body>
+  <a class="govuk-skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="header">
+    <div class="govuk-width-container header__inner">
+      <div>
+        <div class="service-name">CapGEM — Volunteering</div>
+        <div class="phase-banner" role="note" aria-label="alpha notice">
+          <strong>Prototype</strong> — This is a demo for research and feedback.
+        </div>
+      </div>
+      <nav aria-label="Primary">
+        <a href="#trusted">Organisations</a>
+        <a href="#results">Opportunities</a>
+        <a href="#mailing">Mailing list</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content" class="govuk-main-wrapper">
+    <div class="govuk-width-container">
+
+      <h1>Find volunteering near you</h1>
+      <p class="lead">
+        Search by <strong>postcode</strong> and <strong>available time</strong>. See verified organisations.
+        Join with friends. Earn badges. Short summaries first — more detail on request.
+      </p>
+
+      <div class="error-summary visually-hidden" id="error-summary" tabindex="-1" role="alert" aria-labelledby="error-title">
+        <h2 id="error-title">There is a problem</h2>
+        <ul id="error-list"></ul>
+      </div>
+
+      <section class="search-panel" aria-labelledby="search-title">
+        <h2 id="search-title">Search</h2>
+        <form id="search-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="postcode">Postcode</label>
+            <input class="input" id="postcode" name="postcode" type="text" autocomplete="postal-code" spellcheck="false" placeholder="e.g. TF3 4NN" />
+            <div class="form-hint">Enter a Telford postcode (e.g. <strong>TF1</strong>, <strong>TF2</strong>, <strong>TF3</strong>).</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="time">Available time</label>
+            <select id="time" name="time">
+              <option value="">Any time</option>
+              <option value="one-off">One-off (weekend)</option>
+              <option value="evenings">Evenings</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </div>
+
+          <div class="inline-controls">
+            <button class="button" type="submit">Search</button>
+            <button class="button button--secondary" type="button" id="clear">Clear</button>
+          </div>
+
+          <div class="filters" aria-label="Quick filters">
+            <label for="distance" class="visually-hidden">Distance</label>
+            <select id="distance" name="distance">
+              <option value="">Distance</option>
+              <option value="2">Within 2 miles</option>
+              <option value="5">Within 5 miles</option>
+              <option value="10">Within 10 miles</option>
+            </select>
+
+            <label for="cause" class="visually-hidden">Cause</label>
+            <select id="cause" name="cause">
+              <option value="">Cause</option>
+              <option>Environment</option>
+              <option>Food support</option>
+              <option>Education</option>
+              <option>Community events</option>
+            </select>
+          </div>
+        </form>
+      </section>
+
+      <section class="benefits" aria-label="Benefits">
+        <article class="benefit">
+          <h3>Volunteer with friends <span class="tick">✓</span></h3>
+          <p>80% said they are more likely to volunteer with friends. Create a group and sign up together.</p>
+        </article>
+        <article class="benefit">
+          <h3>Earn badges <span class="tick">✓</span></h3>
+          <p>72% value recognition. Collect badges as you complete opportunities.</p>
+        </article>
+        <article class="benefit">
+          <h3>Short and simple <span class="tick">✓</span></h3>
+          <p>Everyone preferred brief summaries with an option to show more information.</p>
+        </article>
+      </section>
+
+      <section id="trusted" aria-labelledby="trusted-title">
+        <h2 id="trusted-title">Trusted organisations</h2>
+        <p class="lead">100% of respondents said verified organisations build trust.</p>
+        <div class="orgs" role="list">
+          <article class="org" role="listitem">
+            <div class="name">City Park Trust</div>
+            <div class="meta">Community & Environment</div>
+            <span class="verified" aria-label="Verified organisation">Verified</span>
+          </article>
+          <article class="org" role="listitem">
+            <div class="name">Riverside Food Bank</div>
+            <div class="meta">Food support</div>
+            <span class="verified">Verified</span>
+          </article>
+          <article class="org" role="listitem">
+            <div class="name">Books for All</div>
+            <div class="meta">Education</div>
+            <span class="verified">Verified</span>
+          </article>
+          <article class="org" role="listitem">
+            <div class="name">Community Events Hub</div>
+            <div class="meta">Local events</div>
+            <span class="verified">Verified</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="results" aria-labelledby="results-title">
+        <h2 id="results-title">Opportunities near you</h2>
+        <p class="lead">92% want to see <strong>location</strong> and 68% want <strong>time commitment</strong> before clicking into a listing.</p>
+
+        <div class="results" id="resultsList">
+          <!-- Card 1 -->
+          <article class="card" data-distance="2" data-time="one-off" data-cause="Environment">
+            <h3>Town Park clean-up (Saturday)</h3>
+            <div class="meta">
+              <span>📍 TF3 • 1.2 miles</span>
+              <span>🕒 One-off • 3 hours</span>
+              <span>✔ City Park Trust (Verified)</span>
+            </div>
+            <div class="tags">
+              <span class="tag">Environment</span>
+              <span class="tag">Friends welcome</span>
+              <span class="tag">Badge: Community Helper</span>
+            </div>
+            <p>Help keep Telford Town Park clean. Equipment provided.</p>
+            <details>
+              <summary>Show more</summary>
+              <p><strong>What you’ll do:</strong> Litter pick, light sweeping, and sorting recyclables with a team lead.</p>
+              <p><strong>Good to know:</strong> Meet at the Visitor Centre. Gloves and pickers supplied. Wear comfy shoes and bring water.</p>
+              <p><strong>Accessibility:</strong> Step-free routes available; tasks can be adapted.</p>
+            </details>
+            <div class="action-bar" role="group" aria-label="Actions for Town Park clean-up">
+              <button class="button" type="button">Apply now</button>
+              <button class="button button--secondary" type="button">Invite friends</button>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="card" data-distance="5" data-time="evenings" data-cause="Education">
+            <h3>Homework club mentor (evenings)</h3>
+            <div class="meta">
+              <span>📍 TF2 • 4.8 miles</span>
+              <span>🕒 1 evening/week</span>
+              <span>✔ Books for All (Verified)</span>
+            </div>
+            <div class="tags">
+              <span class="tag">Education</span>
+              <span class="tag">Friends welcome</span>
+              <span class="tag">Badge: Skills Sharer</span>
+            </div>
+            <p>Support young people with maths and reading in a relaxed setting.</p>
+            <details>
+              <summary>Show more</summary>
+              <p><strong>What you’ll do:</strong> 1:1 and small-group support using materials provided by the centre.</p>
+              <p><strong>Good to know:</strong> Short onboarding and shadowing on your first session.</p>
+              <p><strong>Checks:</strong> Enhanced DBS may be required (organisation assists).</p>
+            </details>
+            <div class="action-bar" role="group" aria-label="Actions for Homework club mentor">
+              <button class="button" type="button">Apply now</button>
+              <button class="button button--secondary" type="button">Invite friends</button>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="card" data-distance="10" data-time="weekly" data-cause="Food support">
+            <h3>Food bank shift (weekly)</h3>
+            <div class="meta">
+              <span>📍 TF1 • 7.5 miles</span>
+              <span>🕒 Weekly • 2 hours</span>
+              <span>✔ Riverside Food Bank (Verified)</span>
+            </div>
+            <div class="tags">
+              <span class="tag">Food support</span>
+              <span class="tag">Friends welcome</span>
+              <span class="tag">Badge: Community Star</span>
+            </div>
+            <p>Sort donations and prepare parcels for local families.</p>
+            <details>
+              <summary>Show more</summary>
+              <p><strong>What you’ll do:</strong> Check expiry dates, organise shelves, and assemble food parcels.</p>
+              <p><strong>Good to know:</strong> Light lifting involved; alternatives available. Training provided on arrival.</p>
+              <p><strong>Accessibility:</strong> Step-free entrance and accessible toilets.</p>
+            </details>
+            <div class="action-bar" role="group" aria-label="Actions for Food bank shift">
+              <button class="button" type="button">Apply now</button>
+              <button class="button button--secondary" type="button">Invite friends</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="mailing" class="mailing" aria-labelledby="mailing-title">
+        <h2 id="mailing-title">Get volunteering opportunities by email (optional)</h2>
+        <p>This is optional because our research showed the mailing list was not popular. You can unsubscribe at any time.</p>
+        <form id="ml-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="ml-email">Email address</label>
+            <input class="input" id="ml-email" name="email" type="email" autocomplete="email" placeholder="your.name@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ml-postcode">Postcode (optional)</label>
+            <input class="input" id="ml-postcode" name="ml-postcode" type="text" autocomplete="postal-code" placeholder="e.g. TF2 7AB" />
+          </div>
+          <div class="form-group">
+            <input id="consent" name="consent" type="checkbox" />
+            <label for="consent">I agree to receive email updates about volunteering opportunities.</label>
+            <p class="consent">We’ll only use your email to send updates. Read our privacy notice.</p>
+          </div>
+          <button class="button" type="submit">Subscribe</button>
+          <p id="ml-ok" class="visually-hidden" aria-live="polite"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="govuk-width-container govuk-footer">
+      <div class="footer-links">
+        <a href="#">Accessibility</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+      </div>
+      <p>© CapGEM (prototype) — built in line with GOV.UK Service Standard principles for learning.</p>
+    </div>
+  </footer>
+
+  <script>
+    const resultsList = document.getElementById('resultsList');
+
+    function applyFilters(){
+      const d = document.getElementById('distance').value;
+      const t = document.getElementById('time').value;
+      const c = (document.getElementById('cause').value || '').toLowerCase();
+      resultsList.querySelectorAll('.card').forEach(card=>{
+        const ok = (!d || Number(card.dataset.distance) <= Number(d)) &&
+                   (!t || card.dataset.time === t) &&
+                   (!c || card.dataset.cause.toLowerCase() === c);
+        card.style.display = ok ? '' : 'none';
+      });
+    }
+
+    // Basic TF postcode check (non-blocking, just guidance)
+    function looksLikeTF(pc){ return /^\\s*TF\\d/i.test(pc); }
+
+    document.getElementById('search-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const postcode = document.getElementById('postcode').value.trim();
+      const errorBox = document.getElementById('error-summary');
+      const errorList = document.getElementById('error-list');
+      errorList.innerHTML = '';
+
+      if (!postcode){
+        errorBox.classList.remove('visually-hidden');
+        const li = document.createElement('li');
+        li.innerHTML = '<a href="#postcode">Enter a postcode</a>';
+        errorList.appendChild(li);
+        errorBox.focus();
+        return;
+      }
+      // Give a helpful nudge if not TF, but still proceed.
+      if (!looksLikeTF(postcode)){
+        errorBox.classList.remove('visually-hidden');
+        const li = document.createElement('li');
+        li.innerHTML = 'For this prototype, try a Telford postcode starting with <strong>TF</strong> (e.g. TF3 4NN).';
+        errorList.appendChild(li);
+      } else {
+        errorBox.classList.add('visually-hidden');
+      }
+
+      applyFilters();
+      document.getElementById('results').scrollIntoView({behavior:'smooth'});
+    });
+
+    document.getElementById('clear').addEventListener('click', ()=>{
+      ['postcode','time','distance','cause'].forEach(id=>{
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('error-summary').classList.add('visually-hidden');
+      applyFilters();
+    });
+
+    ['time','distance','cause'].forEach(id=>{
+      document.getElementById(id).addEventListener('change', applyFilters);
+    });
+
+    document.getElementById('ml-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const email = document.getElementById('ml-email').value.trim();
+      const consent = document.getElementById('consent').checked;
+      const mlOk = document.getElementById('ml-ok');
+      if (!email || !consent){
+        mlOk.classList.remove('visually-hidden');
+        mlOk.textContent = 'Enter your email and tick consent to subscribe.';
+        return;
+      }
+      mlOk.classList.remove('visually-hidden');
+      mlOk.textContent = 'Thanks — you’re subscribed.';
+    });
+  </script>
+</body>
+</html>
