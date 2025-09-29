@@ -64,6 +64,9 @@
       display:grid;grid-template-columns:1fr 1fr;margin-top:10px;
       margin-left:-14px;margin-right:-14px; /* extend to card edges */
     }
+    #results-title {
+       margin-top: 2rem;
+    }
     .action-bar .button{
       border-radius:0;padding:14px 0; /* taller buttons */
     }
@@ -107,7 +110,7 @@
       <h1>Find volunteering near you</h1>
       <p class="lead">
         Search by <strong>postcode</strong> and <strong>available time</strong>. See verified organisations.
-        Join with friends. Earn badges. Short summaries first — more detail on request.
+        Join with <strong>friends</strong> and earn badges.
       </p>
 
       <div class="error-summary visually-hidden" id="error-summary" tabindex="-1" role="alert" aria-labelledby="error-title">
@@ -167,17 +170,17 @@
         </article>
         <article class="benefit">
           <h3>Earn badges <span class="tick">✓</span></h3>
-          <p>72% value recognition. Collect badges as you complete opportunities.</p>
+          <p>Collect badges and titles as you complete your volunteering opportunities.</p>
         </article>
         <article class="benefit">
           <h3>Short and simple <span class="tick">✓</span></h3>
-          <p>Everyone preferred brief summaries with an option to show more information.</p>
+          <p>No jargon, simple information about every volunteering opprtunity.</p>
         </article>
       </section>
 
       <section id="trusted" aria-labelledby="trusted-title">
         <h2 id="trusted-title">Trusted organisations</h2>
-        <p class="lead">100% of respondents said verified organisations build trust.</p>
+        <p class="lead">We know how important Trust is, Every single organization is officially verified</p>
         <div class="orgs" role="list">
           <article class="org" role="listitem">
             <div class="name">City Park Trust</div>
@@ -204,7 +207,7 @@
 
       <section id="results" aria-labelledby="results-title">
         <h2 id="results-title">Opportunities near you</h2>
-       
+        
 
         <div class="results" id="resultsList">
           <!-- Card 1 -->
@@ -288,7 +291,7 @@
       </section>
 
       <section id="mailing" class="mailing" aria-labelledby="mailing-title">
-        <h2 id="mailing-title">Get volunteering opportunities by email (optional)</h2>
+        <h2 id="mailing-title">Get volunteering opportunities by email</h2>
         <p>This is optional because our research showed the mailing list was not popular. You can unsubscribe at any time.</p>
         <form id="ml-form" novalidate>
           <div class="form-group">
@@ -296,7 +299,7 @@
             <input class="input" id="ml-email" name="email" type="email" autocomplete="email" placeholder="your.name@example.com" />
           </div>
           <div class="form-group">
-            <label class="form-label" for="ml-postcode">Postcode (</label>
+            <label class="form-label" for="ml-postcode">Postcode (optional)</label>
             <input class="input" id="ml-postcode" name="ml-postcode" type="text" autocomplete="postal-code" placeholder="e.g. TF2 7AB" />
           </div>
           <div class="form-group">
